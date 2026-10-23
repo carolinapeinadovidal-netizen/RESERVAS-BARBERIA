@@ -1,0 +1,15 @@
+{
+  "name": "reservas-barberia",
+  "version": "1.0.0",
+  "description": "Web de la barbería: landing, reserva de citas, login de barberos y gestión de citas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file=.env server.js",
+    "dev": "node --env-file=.env --watch server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
+    "express": "^4.21.2",
+    "express-session": "^1.19.0"
+  }
+}

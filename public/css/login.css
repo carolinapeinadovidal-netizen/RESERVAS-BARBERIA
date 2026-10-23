@@ -1,0 +1,23 @@
+.login {
+  min-height: calc(100vh - 70px);
+  display: grid;
+  place-items: center;
+  padding: 3rem 1rem;
+  background:
+    linear-gradient(rgba(244, 235, 217, .9), rgba(244, 235, 217, .9)),
+    url('https://cdn.pixabay.com/photo/2016/06/12/21/41/barber-1453064_1280.jpg') center / cover no-repeat;
+}
+.login__panel {
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+  padding-top: 3rem;
+}
+.login__title {
+  font-family: var(--font-neon);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  margin: .3rem 0 0;
+}
+.login .form { text-align: left; }
+.login__submit { width: 100%; margin-top: .8rem; }

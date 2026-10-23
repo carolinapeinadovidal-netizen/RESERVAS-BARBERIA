@@ -1,0 +1,491 @@
+/* =========================================================
+   Panel de gestión — calendario de citas
+   ========================================================= */
+
+:root { --fila: 52px; } /* alto de cada tramo de 30 minutos */
+
+.page-gestion a.btn { text-decoration: none; display: inline-block; }
+.topbar__user {
+  align-self: center;
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-size: .9rem;
+  margin-right: .4rem;
+}
+
+.agenda {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 3vw, 2rem) 4rem;
+}
+
+/* ---------- Cabecera: flechas, título y vistas ---------- */
+.agenda__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--sepia-ink);
+  box-shadow: 0 3px 0 -2px var(--sepia-ink);
+}
+.agenda__nav { display: flex; align-items: center; gap: .8rem; }
+.agenda__title {
+  font-family: var(--font-table);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: clamp(1rem, 2.4vw, 1.35rem);
+  margin: 0;
+  min-width: 15ch;
+  text-align: center;
+}
+.agenda__title::first-letter { text-transform: uppercase; }
+
+.arrow {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: var(--sepia-bg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.arrow:hover { background: var(--accent-dark); }
+.arrow:focus-visible { outline-color: var(--lux); }
+
+.views { display: flex; border: 1px solid var(--sepia-ink); }
+.views button {
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-size: .9rem;
+  padding: .55rem 1.2rem;
+  color: var(--sepia-ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.views button + button { border-left: 1px solid var(--sepia-ink); }
+.views button[aria-selected="true"] { background: var(--sepia-ink); color: var(--sepia-bg); }
+
+.calendar[aria-busy="true"] { opacity: .5; }
+.calendar { transition: opacity .2s; }
+
+/* ---------- Vista día / semana ---------- */
+/* en escritorio sin scroll propio para que la cabecera de días quede fija al bajar */
+.cal-grid { --sticky-top: 68px; }
+.cal-corner, .cal-dayhead { top: var(--sticky-top); }
+@media (max-width: 760px) { .cal-scroll { overflow-x: auto; } }
+.cal-grid {
+  display: grid;
+  grid-template-columns: 64px repeat(var(--cols), minmax(120px, 1fr));
+  border: 1px solid var(--sepia-ink);
+  background: var(--sepia-bg);
+}
+.cal-grid--dia { grid-template-columns: 64px 1fr; }
+
+.cal-corner,
+.cal-dayhead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--paper-shade);
+  border-bottom: 1px solid var(--sepia-ink);
+}
+.cal-dayhead {
+  text-align: center;
+  padding: .5rem .3rem;
+  border-left: 1px solid var(--sepia-ink);
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: .85rem;
+}
+.cal-dayhead strong {
+  display: block;
+  font-family: var(--font-table);
+  font-size: 1.4rem;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+.cal-dayhead.is-today { background: var(--accent); color: var(--sepia-bg); }
+
+.cal-times { position: relative; }
+.cal-time {
+  height: var(--fila);
+  font-size: .75rem;
+  text-align: right;
+  padding: 0 .5rem;
+  transform: translateY(-.55em);
+}
+.cal-time:first-child { transform: none; }
+.cal-time--media { opacity: .55; }
+
+.cal-col {
+  position: relative;
+  height: calc(var(--rows) * var(--fila));
+  border-left: 1px solid var(--sepia-ink);
+  /* líneas cada 30 min, más marcadas en las horas en punto */
+  background:
+    repeating-linear-gradient(to bottom,
+      transparent 0 calc(var(--fila) - 1px),
+      rgba(112, 66, 20, .18) calc(var(--fila) - 1px) var(--fila)),
+    repeating-linear-gradient(to bottom,
+      transparent 0 calc(var(--fila) * 2 - 1px),
+      rgba(112, 66, 20, .35) calc(var(--fila) * 2 - 1px) calc(var(--fila) * 2));
+}
+.cal-col.is-today { background-color: rgba(218, 79, 55, .05); }
+
+.cal-closed {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(135deg,
+    rgba(112, 66, 20, .10) 0 6px, rgba(112, 66, 20, .03) 6px 12px);
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  font-size: .8rem;
+  color: rgba(112, 66, 20, .7);
+}
+
+.cal-event {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  z-index: 1;
+  overflow: hidden;
+  padding: .25rem .5rem;
+  background: var(--sepia-ink);
+  color: var(--sepia-bg);
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .15);
+  font-size: .8rem;
+  line-height: 1.25;
+}
+.cal-event__line { display: flex; gap: .45rem; align-items: baseline; min-width: 0; }
+.cal-event__time { flex: none; font-size: .72rem; opacity: .85; letter-spacing: .05em; }
+.cal-event__client {
+  min-width: 0;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cal-event__service { display: block; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* citas cortas: todo en una línea */
+.cal-event--corta { display: flex; gap: .45rem; align-items: center; padding-top: 0; padding-bottom: 0; }
+.cal-event--corta .cal-event__service { flex: 1; min-width: 0; }
+
+.cal-grid--dia .cal-event { font-size: .9rem; }
+
+/* ---------- Vista mes ---------- */
+.cal-month {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--sepia-ink);
+  background: var(--sepia-bg);
+}
+.cal-month__dow {
+  padding: .5rem;
+  text-align: center;
+  background: var(--paper-shade);
+  border-bottom: 1px solid var(--sepia-ink);
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  font-size: .8rem;
+}
+.cal-month__day {
+  min-height: 104px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: .4rem;
+  padding: .5rem .6rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid rgba(112, 66, 20, .35);
+  border-bottom: 1px solid rgba(112, 66, 20, .35);
+  cursor: pointer;
+  transition: background .2s;
+}
+.cal-month__day:nth-child(7n + 7) { border-right: 0; }
+.cal-month__day:hover { background: var(--paper-shade); }
+.cal-month__day.is-other { opacity: .4; }
+.cal-month__day.is-closed {
+  background: repeating-linear-gradient(135deg,
+    rgba(112, 66, 20, .08) 0 6px, transparent 6px 12px);
+}
+.cal-month__num { font-family: var(--font-table); font-weight: 700; font-size: 1.2rem; }
+.cal-month__day.is-today .cal-month__num {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  background: var(--accent);
+  color: var(--sepia-bg);
+}
+.cal-month__count { font-size: .9rem; }
+.cal-month__count strong { font-size: 1.15rem; color: var(--accent); }
+.cal-month__count.is-empty strong { color: inherit; }
+.cal-month__closed { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; opacity: .7; }
+
+@media (max-width: 760px) {
+  .topbar__user { display: none; }
+  .agenda__head { justify-content: center; }
+  .cal-month__day { min-height: 74px; padding: .35rem; }
+  .cal-month__count { font-size: .75rem; }
+  .cal-month__count strong { font-size: .95rem; }
+  .cal-month__count span { display: none; }
+  .cal-month__closed { font-size: .6rem; letter-spacing: .05em; }
+}
+
+/* =========================================================
+   Crear cita
+   ========================================================= */
+
+#btn-crear { margin-left: auto; }
+
+/* Huecos libres clicables en día / semana */
+.cal-free {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: calc(var(--fila) - 4px);
+  margin-top: 2px;
+  padding: 0;
+  font-family: var(--font-poster);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: .75rem;
+  color: var(--accent);
+  background: transparent;
+  border: 1px dashed transparent;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity .15s, background .15s;
+}
+.cal-free:hover,
+.cal-free:focus-visible {
+  opacity: 1;
+  background: rgba(218, 79, 55, .08);
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* Ventana modal */
+.modal {
+  width: min(720px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  color: var(--sepia-ink);
+  background: var(--sepia-bg);
+  border: 1px solid var(--sepia-ink);
+  outline: 1px solid var(--sepia-ink);
+  outline-offset: -8px;
+}
+.modal::backdrop { background: rgba(59, 35, 11, .55); }
+.modal__inner { padding: 2rem clamp(1.2rem, 4vw, 2.5rem) 1.5rem; }
+.modal__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.modal__title {
+  font-family: var(--font-neon);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin: 0;
+}
+.modal__close {
+  font-size: 2rem;
+  line-height: 1;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: var(--sepia-ink);
+  background: transparent;
+  border: 1px solid var(--sepia-ink);
+  cursor: pointer;
+}
+.modal__close:hover { background: var(--sepia-ink); color: var(--sepia-bg); }
+.modal__section { margin-top: 1.6rem; }
+.modal__section .panel__title { margin: 0 0 .9rem; }
+.modal__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--sepia-ink);
+}
+.modal .form__row { margin-bottom: 1rem; }
+.modal .field { margin-top: .9rem; }
+
+.views--small { display: inline-flex; }
+.views--small button { font-size: .8rem; padding: .45rem 1rem; }
+
+/* Resultados de búsqueda de clientes */
+.client-results { list-style: none; margin: .5rem 0 0; padding: 0; }
+.client-results:empty { display: none; }
+.client-results li + li { border-top: 1px dotted var(--sepia-ink); }
+.client-results button {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: .6rem .8rem;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.client-results button:hover,
+.client-results button:focus-visible { background: var(--paper-shade); outline: none; }
+.client-results small { font-style: italic; white-space: nowrap; }
+.client-results .hint { padding: .6rem .8rem; }
+
+.client-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: .9rem;
+  padding: .8rem 1rem;
+  background: var(--paper-shade);
+  border: 1px dashed var(--sepia-ink);
+}
+.client-chip strong { font-family: var(--font-poster); font-weight: 700; letter-spacing: .05em; font-size: 1.1rem; }
+
+/* Servicios */
+.service-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .6rem;
+}
+.service-opt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .8rem;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--sepia-ink);
+  cursor: pointer;
+}
+.service-opt:hover { background: var(--paper-shade); }
+.service-opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--sepia-bg); }
+.service-opt small { font-style: italic; white-space: nowrap; }
+
+.field--date input { max-width: 220px; }
+.modal .slots { margin-top: 1rem; }
+
+/* Aviso flotante */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: .8rem 1.4rem;
+  background: var(--sepia-ink);
+  color: var(--sepia-bg);
+  border-left: 5px solid var(--lux);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+}
+
+@media (max-width: 760px) {
+  #btn-crear { margin-left: 0; order: 3; width: 100%; }
+  .modal__foot { flex-direction: column-reverse; }
+  .modal__foot .btn { width: 100%; }
+}
+
+/* =========================================================
+   Detalle de cita
+   ========================================================= */
+
+/* Las citas son botones: quitamos el estilo por defecto */
+button.cal-event {
+  display: block;
+  text-align: left;
+  font-family: var(--font-table);
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  cursor: pointer;
+  transition: filter .15s, box-shadow .15s;
+}
+button.cal-event.cal-event--corta { display: flex; }
+button.cal-event:hover { filter: brightness(1.15); box-shadow: 0 3px 10px rgba(59, 35, 11, .35); }
+button.cal-event:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.modal--detalle { width: min(500px, calc(100vw - 2rem)); }
+.modal--detalle .ticket { max-width: none; }
+.detalle__aviso { margin: 1rem 0 0; }
+
+.btn--danger { color: var(--accent); border-color: var(--accent); }
+.btn--danger:hover { background: var(--accent); color: var(--sepia-bg); }
+
+.confirm {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.2rem 0;
+  border: 1px solid var(--accent);
+  border-left-width: 6px;
+  background: #fbe6e1;
+}
+.confirm p { margin: 0; color: #8a2a18; font-weight: 600; }
+.confirm .modal__foot { border-top: 0; margin-top: 1rem; padding-bottom: 1.2rem; }
+
+/* =========================================================
+   Arrastrar citas
+   ========================================================= */
+
+button.cal-event.is-draggable { cursor: grab; touch-action: none; user-select: none; }
+button.cal-event.is-dragging { opacity: .3; }
+
+.cal-event--ghost {
+  z-index: 6;
+  pointer-events: none;
+  cursor: grabbing;
+  outline: 2px dashed var(--lux);
+  outline-offset: 1px;
+  box-shadow: 0 8px 22px rgba(59, 35, 11, .45);
+  transition: top .08s ease-out;
+}
+.cal-event--ghost.is-invalid {
+  background: #9b3a28;
+  outline-color: var(--accent);
+  opacity: .85;
+}
+.cal-event--ghost.is-invalid::after {
+  content: '✕';
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-weight: 700;
+}
+.cal-event--ghost.is-saving { opacity: .7; outline-style: solid; }
+
+body.is-arrastrando,
+body.is-arrastrando * { cursor: grabbing !important; user-select: none; }
+body.is-arrastrando .cal-free { visibility: hidden; }

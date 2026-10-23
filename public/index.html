@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sendi&#39;s Barber · El arte del estilismo clásico</title>
+  <meta name="description" content="Técnicas tradicionales de barbería combinadas con el cuidado capilar moderno.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Poiret+One&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- ===== CABECERA ===== -->
+  <header class="topbar">
+    <a href="#" class="brand">
+      <span class="brand__mark">S</span>
+      <span class="brand__name">Sendi&#39;s Barber</span>
+    </a>
+    <nav class="topbar__nav">
+      <a href="#servicios">Servicios</a>
+      <a href="#galeria">Galería</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="topbar__actions">
+      <!-- Botones aún sin funcionalidad -->
+      <a href="/login" class="btn btn--ghost" id="btn-login">Iniciar sesión</a>
+      <a href="/reserva" class="btn" id="btn-citas-top">Citas</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__photo" role="img" aria-label="Sillón clásico de barbería"></div>
+    <div class="hero__frame">
+      <div class="deco-fan" aria-hidden="true"></div>
+      <p class="hero__est">— Est. MCMXXX —</p>
+      <h1 class="hero__title">
+        <span class="hero__title-main">El arte del estilismo clásico</span>
+        <span class="hero__title-sub">Recupera la elegancia de los años 20</span>
+      </h1>
+      <div class="deco-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+      <p class="hero__value">
+        Técnicas tradicionales combinadas con el cuidado capilar moderno.
+        Navaja, toalla caliente y productos de hoy, en un salón que no ha olvidado el ritual.
+      </p>
+      <a href="/reserva" class="btn btn--lg" id="btn-reserva-hero">Reserva tu cita</a>
+    </div>
+  </section>
+
+  <!-- ===== PROPUESTA DE VALOR ===== -->
+  <section class="values">
+    <article class="value">
+      <div class="value__icon" aria-hidden="true">✂</div>
+      <h3 class="value__title">Oficio tradicional</h3>
+      <p>Corte a tijera y navaja como se hacía en los salones de antaño.</p>
+    </article>
+    <article class="value">
+      <div class="value__icon" aria-hidden="true">❦</div>
+      <h3 class="value__title">Cuidado capilar</h3>
+      <p>Tratamientos actuales para cuero cabelludo, cabello y barba.</p>
+    </article>
+    <article class="value">
+      <div class="value__icon" aria-hidden="true">◈</div>
+      <h3 class="value__title">Reserva digital</h3>
+      <p>Elige barbero, día y hora desde el móvil en menos de un minuto.</p>
+    </article>
+  </section>
+
+  <!-- ===== MENÚ DE SERVICIOS ===== -->
+  <section class="services" id="servicios">
+    <header class="section-head">
+      <p class="section-head__kicker">La carta de la casa</p>
+      <h2 class="section-head__title">Menú de servicios</h2>
+      <div class="deco-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+    </header>
+
+    <div class="services__grid" id="menu-servicios">
+      <p class="loading">Cargando la carta…</p>
+    </div>
+
+    <div class="services__cta">
+      <a href="/reserva" class="btn btn--lg" id="btn-reserva-menu">Reserva tu cita</a>
+    </div>
+  </section>
+
+  <!-- ===== GALERÍA ===== -->
+  <section class="gallery" id="galeria">
+    <header class="section-head">
+      <p class="section-head__kicker">Desde el salón</p>
+      <h2 class="section-head__title">Galería</h2>
+      <div class="deco-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+    </header>
+    <div class="gallery__grid">
+      <figure class="gallery__item gallery__item--tall">
+        <img src="https://cdn.pixabay.com/photo/2017/03/22/17/37/barber-2165745_1280.jpg" alt="Barbero trabajando en el salón" loading="lazy">
+      </figure>
+      <figure class="gallery__item">
+        <img src="https://cdn.pixabay.com/photo/2021/08/20/18/00/shaving-6560988_1280.jpg" alt="Brocha de afeitar" loading="lazy">
+      </figure>
+      <figure class="gallery__item">
+        <img src="https://cdn.pixabay.com/photo/2016/02/04/17/13/razor-1179458_1280.jpg" alt="Navaja de afeitar clásica" loading="lazy">
+      </figure>
+      <figure class="gallery__item gallery__item--wide">
+        <img src="https://cdn.pixabay.com/photo/2019/09/17/18/52/barbershop-4484297_1280.jpg" alt="Interior de barbería vintage" loading="lazy">
+      </figure>
+      <figure class="gallery__item">
+        <img src="https://cdn.pixabay.com/photo/2017/07/15/21/00/sign-2507732_1280.jpg" alt="Cartel de barbería" loading="lazy">
+      </figure>
+      <figure class="gallery__item">
+        <img src="https://cdn.pixabay.com/photo/2017/05/26/10/25/barber-2345701_1280.jpg" alt="Herramientas del barbero" loading="lazy">
+      </figure>
+    </div>
+    <p class="gallery__credit">Fotografías: <a href="https://pixabay.com/images/search/vintage%20barbershop/" target="_blank" rel="noopener">Pixabay</a></p>
+  </section>
+
+  <!-- ===== BANDA CTA ===== -->
+  <section class="banner">
+    <div class="banner__inner">
+      <p class="banner__kicker">Su sillón le espera</p>
+      <h2 class="banner__title">Reserve como en 1930, desde su móvil</h2>
+      <a href="/reserva" class="btn btn--lg btn--light" id="btn-reserva-banner">Reserva tu cita</a>
+    </div>
+  </section>
+
+  <!-- ===== PIE ===== -->
+  <footer class="footer" id="contacto">
+    <div class="footer__col">
+      <h4 class="footer__title">Dirección</h4>
+      <p>Calle Mayor, 30<br>28013 Madrid</p>
+    </div>
+    <div class="footer__col footer__col--center">
+      <span class="brand__mark brand__mark--lg">S</span>
+      <p class="footer__brand">Sendi&#39;s Barber</p>
+    </div>
+    <div class="footer__col">
+      <h4 class="footer__title">Horario</h4>
+      <p>Martes a viernes · 9:00 – 14:00 y 16:00 – 20:30<br>Sábados · 10:00 – 13:30</p>
+    </div>
+    <nav class="footer__links" aria-label="Información legal">
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+    </nav>
+    <p class="footer__legal">© 2026 Sendi&#39;s Barber · Todos los derechos reservados</p>
+  </footer>
+
+  <script src="/js/landing.js"></script>
+</body>
+</html>

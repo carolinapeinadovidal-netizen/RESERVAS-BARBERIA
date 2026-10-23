@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso barberos · Sendi's Barber</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Poiret+One&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/reserva.css">
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body class="page-login">
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="brand__mark">S</span>
+      <span class="brand__name">Sendi's Barber</span>
+    </a>
+    <div class="topbar__actions">
+      <a href="/" class="btn btn--ghost">Volver</a>
+    </div>
+  </header>
+
+  <main class="login">
+    <section class="panel login__panel">
+      <div class="deco-fan deco-fan--ink" aria-hidden="true"></div>
+      <p class="section-head__kicker">Área privada</p>
+      <h1 class="login__title">Acceso barberos</h1>
+      <div class="deco-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+
+      <div class="alert" id="alerta" role="alert" hidden></div>
+
+      <form class="form" id="form-login" novalidate>
+        <label class="field">
+          <span>Usuario</span>
+          <input type="text" name="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input type="password" name="contrasena" autocomplete="current-password" required>
+        </label>
+        <button type="submit" class="btn btn--lg login__submit" id="btn-entrar">Iniciar sesión</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>

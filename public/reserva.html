@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserva tu cita · Sendi's Barber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Poiret+One&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/reserva.css">
+</head>
+<body class="page-reserva">
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="brand__mark">S</span>
+      <span class="brand__name">Sendi's Barber</span>
+    </a>
+    <div class="topbar__actions">
+      <a href="/" class="btn btn--ghost">Volver</a>
+    </div>
+  </header>
+
+  <main class="booking">
+    <header class="section-head">
+      <p class="section-head__kicker">Su sillón le espera</p>
+      <h1 class="section-head__title">Reserva tu cita</h1>
+      <div class="deco-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+    </header>
+
+    <ol class="stepper" aria-label="Pasos de la reserva">
+      <li class="stepper__step is-active" data-step="1"><span>I</span>Barbero y servicio</li>
+      <li class="stepper__line" aria-hidden="true"></li>
+      <li class="stepper__step" data-step="2"><span>II</span>Tus datos y hora</li>
+    </ol>
+
+    <div class="alert" id="alerta" role="alert" hidden></div>
+
+    <!-- ===== PASO 1 ===== -->
+    <section class="panel" id="paso1">
+      <h2 class="panel__title">Elige tu barbero</h2>
+      <div class="choice-grid choice-grid--barbers" id="lista-barberos">
+        <p class="loading">Cargando barberos…</p>
+      </div>
+
+      <h2 class="panel__title">Elige el servicio</h2>
+      <div class="choice-grid choice-grid--services" id="lista-servicios">
+        <p class="loading">Cargando servicios…</p>
+      </div>
+
+      <div class="panel__actions">
+        <button type="button" class="btn btn--lg" id="btn-paso2" disabled>Continuar</button>
+      </div>
+    </section>
+
+    <!-- ===== PASO 2 ===== -->
+    <section class="panel" id="paso2" hidden>
+      <div class="summary" id="resumen"></div>
+
+      <h2 class="panel__title">Elige el día</h2>
+      <div class="days" id="lista-dias" role="listbox" aria-label="Días disponibles"></div>
+
+      <h2 class="panel__title">Elige la hora</h2>
+      <div class="slots" id="lista-huecos">
+        <p class="hint">Selecciona primero un día.</p>
+      </div>
+
+      <h2 class="panel__title">Tus datos</h2>
+      <form class="form" id="form-reserva" novalidate>
+        <div class="form__row">
+          <label class="field">
+            <span>Nombre *</span>
+            <input type="text" name="nombre" autocomplete="given-name" required minlength="2" maxlength="60">
+          </label>
+          <label class="field">
+            <span>Apellidos</span>
+            <input type="text" name="apellidos" autocomplete="family-name" maxlength="80">
+          </label>
+        </div>
+        <label class="field">
+          <span>Teléfono *</span>
+          <input type="tel" name="telefono" autocomplete="tel" required inputmode="tel" placeholder="600 123 456">
+        </label>
+
+        <div class="panel__actions panel__actions--split">
+          <button type="button" class="btn btn--ghost" id="btn-volver">Atrás</button>
+          <button type="submit" class="btn btn--lg" id="btn-confirmar" disabled>Confirmar cita</button>
+        </div>
+        <p class="form__legal">
+          Al confirmar la cita aceptas nuestra
+          <a href="/privacidad" target="_blank" rel="noopener">Política de privacidad</a>:
+          usaremos tu nombre y tu teléfono únicamente para gestionar tu reserva.
+        </p>
+      </form>
+    </section>
+
+    <!-- ===== CONFIRMACIÓN ===== -->
+    <section class="panel panel--done" id="confirmacion" hidden>
+      <div class="deco-fan deco-fan--ink" aria-hidden="true"></div>
+      <h2 class="panel__title">¡Cita confirmada!</h2>
+      <div class="ticket" id="ticket"></div>
+      <div class="panel__actions panel__actions--split">
+        <a href="/" class="btn btn--ghost">Ir al inicio</a>
+        <a href="/reserva" class="btn">Reservar otra cita</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="legal-footer">
+    <nav aria-label="Información legal">
+      <a href="/aviso-legal">Aviso legal</a>
+      <a href="/privacidad">Política de privacidad</a>
+      <a href="/cookies">Política de cookies</a>
+    </nav>
+    <p>© 2026 Sendi&#39;s Barber</p>
+  </footer>
+
+  <script src="/js/imagenes.js"></script>
+  <script src="/js/reserva.js"></script>
+</body>
+</html>

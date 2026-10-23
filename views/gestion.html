@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de citas · Sendi's Barber</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Poiret+One&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/reserva.css">
+  <link rel="stylesheet" href="/css/gestion.css">
+</head>
+<body class="page-gestion">
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="brand__mark">S</span>
+      <span class="brand__name">Sendi's Barber</span>
+    </a>
+    <div class="topbar__actions">
+      <span class="topbar__user" id="usuario-actual"></span>
+      <a href="/" class="btn btn--ghost">Inicio</a>
+      <button type="button" class="btn btn--ghost" id="btn-salir">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="agenda">
+    <header class="agenda__head">
+      <div class="agenda__nav">
+        <button type="button" class="arrow" id="btn-anterior" aria-label="Anterior">&#8249;</button>
+        <h1 class="agenda__title" id="titulo" aria-live="polite"></h1>
+        <button type="button" class="arrow" id="btn-siguiente" aria-label="Siguiente">&#8250;</button>
+      </div>
+      <button type="button" class="btn" id="btn-crear">+ Crear cita</button>
+      <div class="views" role="tablist" aria-label="Vista del calendario">
+        <button type="button" role="tab" data-vista="dia" aria-selected="true">Día</button>
+        <button type="button" role="tab" data-vista="semana" aria-selected="false">Semana</button>
+        <button type="button" role="tab" data-vista="mes" aria-selected="false">Mes</button>
+      </div>
+    </header>
+
+    <div class="alert" id="alerta" role="alert" hidden></div>
+
+    <div class="calendar" id="calendario" aria-busy="true"></div>
+  </main>
+
+  <!-- ===== Crear cita ===== -->
+  <dialog class="modal" id="modal-cita" aria-labelledby="modal-titulo">
+    <form class="modal__inner" id="form-cita" method="dialog" novalidate>
+      <header class="modal__head">
+        <h2 class="modal__title" id="modal-titulo">Nueva cita</h2>
+        <button type="button" class="modal__close" id="btn-cerrar-modal" aria-label="Cerrar">&times;</button>
+      </header>
+
+      <div class="alert" id="alerta-modal" role="alert" hidden></div>
+
+      <!-- 1. Cliente -->
+      <section class="modal__section">
+        <h3 class="panel__title">1 · Cliente</h3>
+        <div class="views views--small" role="tablist" aria-label="Tipo de cliente">
+          <button type="button" role="tab" data-modo-cliente="existente" aria-selected="true">Cliente existente</button>
+          <button type="button" role="tab" data-modo-cliente="nuevo" aria-selected="false">Nuevo cliente</button>
+        </div>
+
+        <div id="cliente-existente">
+          <label class="field">
+            <span>Buscar por nombre, apellidos o teléfono</span>
+            <input type="search" id="buscar-cliente" autocomplete="off" placeholder="Ej.: Lucía Gómez o 699 000 101">
+          </label>
+          <ul class="client-results" id="resultados-cliente" aria-live="polite"></ul>
+          <div class="client-chip" id="cliente-elegido" hidden></div>
+        </div>
+
+        <div id="cliente-nuevo" hidden>
+          <div class="form__row">
+            <label class="field">
+              <span>Nombre *</span>
+              <input type="text" id="nuevo-nombre" autocomplete="off" maxlength="60">
+            </label>
+            <label class="field">
+              <span>Apellidos</span>
+              <input type="text" id="nuevo-apellidos" autocomplete="off" maxlength="80">
+            </label>
+          </div>
+          <label class="field">
+            <span>Teléfono *</span>
+            <input type="tel" id="nuevo-telefono" autocomplete="off" inputmode="tel" placeholder="600 123 456">
+          </label>
+        </div>
+      </section>
+
+      <!-- 2. Servicio -->
+      <section class="modal__section">
+        <h3 class="panel__title">2 · Servicio</h3>
+        <p class="hint" id="hint-servicio" hidden></p>
+        <div class="service-list" id="lista-servicios"></div>
+      </section>
+
+      <!-- 3. Día y hora -->
+      <section class="modal__section">
+        <h3 class="panel__title">3 · Día y hora</h3>
+        <div id="hueco-fijo" class="client-chip" hidden></div>
+        <div id="hueco-libre">
+          <label class="field field--date">
+            <span>Día</span>
+            <input type="date" id="fecha-cita">
+          </label>
+          <div class="slots" id="lista-huecos">
+            <p class="hint">Elige primero un servicio.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="modal__foot">
+        <button type="button" class="btn btn--ghost" id="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn" id="btn-guardar-cita" disabled>Crear cita</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- ===== Detalle de cita ===== -->
+  <dialog class="modal modal--detalle" id="modal-detalle" aria-labelledby="detalle-titulo">
+    <div class="modal__inner">
+      <header class="modal__head">
+        <h2 class="modal__title" id="detalle-titulo">Cita</h2>
+        <button type="button" class="modal__close" id="btn-cerrar-detalle" aria-label="Cerrar">&times;</button>
+      </header>
+
+      <div class="ticket" id="detalle-datos"></div>
+      <p class="hint detalle__aviso" id="detalle-pasada" hidden>Esta cita ya ha empezado o pasado: solo se puede eliminar.</p>
+
+      <div class="alert" id="alerta-detalle" role="alert" hidden></div>
+
+      <footer class="modal__foot" id="detalle-acciones">
+        <button type="button" class="btn btn--ghost btn--danger" id="btn-eliminar-cita">Eliminar</button>
+        <button type="button" class="btn" id="btn-editar-cita">Editar</button>
+      </footer>
+
+      <div class="confirm" id="detalle-confirmar" hidden>
+        <p id="texto-confirmar"></p>
+        <div class="modal__foot">
+          <button type="button" class="btn btn--ghost" id="btn-confirmar-no">No, volver</button>
+          <button type="button" class="btn" id="btn-confirmar-si">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="/js/gestion.js"></script>
+</body>
+</html>
